@@ -33,6 +33,11 @@ public class DownUtil {
      * 定义下载的线程对象
      */
     private DownThread[] threads;
+
+    /**
+     * 定义文件大小
+     */
+    private long fileSize;
     /**
      * 默认下载线程数
      */
@@ -74,6 +79,7 @@ public class DownUtil {
         conn.setRequestProperty("Connection", "Keep-Alive");
         //获取文件长度
         long contentLength = conn.getContentLengthLong();
+        fileSize = contentLength;
         conn.disconnect();
 
         //分段
@@ -97,10 +103,22 @@ public class DownUtil {
 
             //创建下载线程，并启动
             threads[i] = new DownThread(startPos, currentPartSize, currentPart);
-            System.out.println("threads[i] = " + threads[i]);
+//            System.out.println("threads[i] = " + threads[i]);
             threads[i].start();
         }
     }
+    //获取下载的完成百分比
+    public double getCompleteRate() {
+        //统计多个线程已经下载的大小
+        long sumSize = 0;
+        for (int i = 0; i < threads.length; i++) {
+            sumSize += threads[i].getLength();
+        }
+        System.out.println("sumSize = " + sumSize);
+        System.out.println("fileSize = " + fileSize);
+        return sumSize * 1.0 / fileSize;
+    }
+
     private class DownThread extends Thread {
         //当前线程的下载位置
         private long startPos;
@@ -118,12 +136,10 @@ public class DownUtil {
             this.startPos = startPos;
             this.currentPartSize = currentPartSize;
             this.currentPart = currentPart;
-            System.out.println("1 = " + 1);
         }
         @Override
         public void run () {
             try {
-                System.out.println("2 = " + 2);
                 URL url = new URL(path);
                 HttpURLConnection conn = (HttpURLConnection)url.openConnection();
                 conn.setConnectTimeout(5 * 1000);
@@ -145,8 +161,14 @@ public class DownUtil {
                 while (length < currentPartSize &&
                         (readLength = is.read(buffer)) != -1) {
                     currentPart.write(buffer, 0, readLength);
-                    length += readLength;
+                    if (length + readLength > currentPartSize) {
+                        length = currentPartSize;
+                    } else {
+                        length += readLength;
+                    }
                 }
+                System.out.println(getName() + "length = " + length);
+
                 currentPart.close();
                 is.close();
             } catch (MalformedURLException e) {
@@ -182,10 +204,6 @@ public class DownUtil {
 
         public long getLength() {
             return length;
-        }
-
-        public void setLength(long length) {
-            this.length = length;
         }
     }
 
