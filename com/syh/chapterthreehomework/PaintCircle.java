@@ -1,4 +1,4 @@
-package com.syh;
+package com.syh.chapterthreehomework;
 
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ public class PaintCircle {
      */
     @Test
     public void paintCircle(){
-        //定义半径，范围在5-20
+        //定义半径大小，范围在5-20
         Random random = new Random();
         int radius = 0;
         while (radius < 5){
@@ -21,7 +21,7 @@ public class PaintCircle {
         for (int i = 0; i <= 2 * radius; i += 2) {
             //计算圆前面的空格数
             int previousBlank = (int)Math.round(radius - Math.sqrt(2 * radius * i - i * i));
-            //计算中间的空格，直径减去前后空格就是中间的空格
+            //计算中间的空格 ，直径减去前后空格就是中间的空格
             int centerBlank = 2 * (radius - previousBlank);
 
             //打印前面的空格
@@ -42,3 +42,4 @@ public class PaintCircle {
         }
     }
 }
+

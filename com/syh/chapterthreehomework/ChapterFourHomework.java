@@ -1,4 +1,4 @@
-package com.syh;
+package com.syh.chapterthreehomework;
 
 import org.junit.Test;
 
