@@ -34,7 +34,7 @@ public class Server {
             //发送消息给客户端
             socketChannel.write(charset.encode("各位客户端你们好，这里是服务端"));
 
-            //读取客户端发送的消息
+            //读取客户端发送的消息，但是只能读取第一次客户端发送的消息
             StringBuffer stringBuffer = new StringBuffer("");
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             while (socketChannel.read(buffer).get() > 0) {
