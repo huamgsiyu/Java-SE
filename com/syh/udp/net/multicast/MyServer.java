@@ -21,7 +21,8 @@ public class MyServer {
         MulticastSocket sendSocket = new MulticastSocket(AddressMessage.PORT);
         //将MulticastSocket对象加入到多点广播组中
         sendSocket.joinGroup(InetAddress.getByName(AddressMessage.MULTICAST_IP));
-
+        //设置该MulticastSocket发送的消息是否发送给自己
+        sendSocket.setLoopbackMode(false);
         //创建DatagramPacket对象
         DatagramPacket sendPacket = new DatagramPacket(new byte[1024],
                 1024,
